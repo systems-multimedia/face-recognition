@@ -5,42 +5,147 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Face Recognition</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    
+    <title>Document</title>
+
     <style>
-        html, body {
-            height: 100%;
+        * {
+            margin: 0;
+            padding: 0;
         }
 
-        .bg {
-            background-image: url("./img/bg1.jpg");
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
-            height: 100%;
-        }
-
-        canvas {
+        img {
             position: absolute;
         }
-    </style>
 
-    <script defer src="./js_face_recognition_2/face-api.min.js"></script>
-    <script defer src="./js_face_recognition_2/app.js"></script>
+        .face-box {
+            border: 1px solid red;
+            position: absolute;
+        }
+
+        .eye-container {
+            display: flex;
+            width: 30px;
+            height: 30px;
+            position: absolute;
+            align-content: center;
+            justify-content: center;
+            transition: 0.3s;
+            background: rgb(241, 38, 116);
+        }
+
+        .eye-container .eye-vertical-box {
+            height: 100%;
+            width: 5px;
+            margin: auto;
+            background: rgb(241, 38, 116);
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+        }
+
+        .eye-container .eye-horizontal-box {
+            height: 5px;
+            width: 100%;
+            margin: auto;
+            background: rgb(241, 38, 116);
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+        }
+    </style>
 </head>
 
-<body class="bg">
-    <div class="container">
-        <div class="panel-heading">
-            <h1 style="color: #fff">Face Recognition</h1>
+<body>
+    <div id="wrapper">
+        <img id="picture" src="./img/face1.jpg" alt="">
+        <input type="number" name="" id="rotating" placeholder="Rotar">
+        <div class="eye-container" id="track1">
+            <!-- <div class="eye-horizontal-box"></div>
+            <div class="eye-vertical-box"></div> -->
         </div>
-
-        <form method="post">
-            <input type="file" accept="image/*" name="image" id="image" class="form-control">
-        </form>
+        <div class="eye-container" id="track2">
+            <!-- <div class="eye-horizontal-box"></div>
+            <div class="eye-vertical-box"></div> -->
+        </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="./jquery.facedetection/dist/jquery.facedetection.js"></script>
+    <script>
+        var clickCount = 0;
+        var added = [false, false];
+        var appear = false;
+        var glassWidth;
+        var containers = document.querySelectorAll('.eye-container');
+        for (let i = 0; i < containers.length; i++) {
+            containers[i].remove();
+        }
+        $('#picture').faceDetection({
+            complete: function (faces) {
+                console.log(faces);
+                $div = $('<div>', { "class": "face-box", "id": "face-box" });
+                $div.css('top', faces[0].positionY);
+                $div.css('left', faces[0].positionX);
+                $div.css('width', faces[0].width);
+                $div.css('height', faces[0].height);
+                $('#wrapper').append($div);
+                glassWidth = faces[0].width;
+            }, error: function (code, message) {
+                console.log(message)
+            }
+        });
+        document.querySelector('#rotating').addEventListener('change', (e) => {
+            document.querySelector('#picture').style.transform = `rotateZ(${e.target.value}deg)`;
+        });
+        document.querySelector('#face-box').addEventListener('click', e => {
+            if (added[clickCount] == false) {
+                $('#wrapper').append(containers[clickCount]);
+                added[clickCount] = true;
+                move(e.x, e.y);
+            }
+            if (clickCount < 1) {
+                clickCount++;
+            } else {
+                clickCount = 0;
+            }
+            if (clickCount === 1 && appear === false) {
+                appear = true;
+                $checkButton = $('<button>', { "id": "testButton" });
+                $checkButton.css('position', 'absolute');
+                $checkButton.css('right', 20);
+                $checkButton.append('Probar');
+                $('#wrapper').append($checkButton);
+                document.querySelector('#testButton').addEventListener('click', e => {
+                    appenGlass(
+                        containers[0].getBoundingClientRect().top,
+                        containers[1].getBoundingClientRect().top
+                    );
+                })
+            }
+            move(e.x, e.y);
+            function move(x, y) {
+                if (containers[clickCount]) {
+                    containers[clickCount].style.left = `${x - (containers[clickCount].getBoundingClientRect().width / 2)}px`;
+                    containers[clickCount].style.top = `${y - (containers[clickCount].getBoundingClientRect().height / 2)}px`;
+                }
+            }
+            function appenGlass(y1, y2) {
+                $glass = $('<img>', { "src": "/img/glasses.png" });
+                $glass.src = "/img/glasses.png";
+                $glass.css('width', glassWidth);
+                $('#face-box').append($glass);
+                if (y1 > y2) {
+                    document.querySelector('#glass').style.top = `${y1 - (document.querySelector('#glass').getBoundingClientRect().height / 2)}px`;
+                } else {
+                    document.querySelector('#glass').style.top = `${y2 - (document.querySelector('#glass').getBoundingClientRect().height / 2)}px`;
+                }
+            }
+        });
+
+    </script>
 </body>
 
 </html>

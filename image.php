@@ -1,8 +1,8 @@
 <?php
 
-require "lib/FaceDetector.php";
+require "FaceDetector.php";
 
-use sway\FaceDetector;
+use svay\FaceDetector;
 
 $faceDetect = new FaceDetector();
 $faceDetect->faceDetect($_FILES['image']['tmp_name']);

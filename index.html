@@ -5,89 +5,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-    
+    <title>Face Detection</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-        }
-
-        img {
-            width: 300px;
-        }
-
-        .face-box {
-            border: 1px solid red;
-            position: absolute;
-        }
-
-        .eye-container {
-            display: flex;
-            width: 30px;
-            height: 30px;
-            position: absolute;
-        }
-
-        .eye-container .eye-vertical-box {
+        body,
+        html {
             height: 100%;
-            width: 20px;
-            margin: auto;
-            background: red;
         }
 
-        .eye-container .eye-horizontal-box {
-            height: 20px;
-            width: 100%;
-            margin: auto;
-            background: red;
+        .bg {
+            background-image: url("./img/bg1.jpg");
+            height: 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
         }
     </style>
 </head>
 
-<body>
-    <div id="wrapper">
-        <img id="picture" src="./img/Foto-C.png" alt="">
+<body class="bg">
+    <br><br><br>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3"
+                style="margin: auto; background: white; padding: 20px; box-shadow: 10px 10px 5px #888;">
+                <div class="panel-heading">
+                    <h1>Face Detection</h1>
+                </div>
+                <hr>
+                <form action="image.php" method="post" enctype="multipart/form-data">
+                    <input type="file" name="image" accept="image/*" id="" class="form-control">
+                    <br>
+                    <button type="submit" class="btn btn-block btn-outline-success">Detect Face</button>
+                </form>
+            </div>
+        </div>
     </div>
-    
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-    <script src="./node_modules/jquery.facedetection/dist/jquery.facedetection.js"></script>
-    <script>
-        // try {
-            $('#picture').faceDetection({
-                complete: function (faces) {
-                    console.log(faces);
-                    $div = $('<div>', { "class": "face-box" });
-                    $div.css('top', faces.scaleY + 'px');
-                    $div.css('left', faces.scaleX + 'px');
-                    $div.css('width', faces.width  * faces.scaleX + 'px');
-                    $div.css('height', faces.height * faces.scaleY + 'px');
-                    $('#wrapper').append($div);
-
-                    // $leftEye = $('<div>', { "class": "eye-container" });
-                    // $eyeVertical = $('div', { "class": "eye-vertical-box" });
-                    // $eyeHorizontal = $('<div>', { "class": "eye-horizontal-box" });
-
-                    // $rightEye = $leftEye;
-                    // $leftEye.css('top', faces.positionY + (faces.positionY * 0.2) + 'px');
-                    // $rightEye.css('top', faces.positionY + (faces.positionY * 0.2) + 'px');
-                    // $leftEye.css('left', faces.positionX + (faces.positionX + 0.12) + 'px');
-                    // $rightEye.css('right', faces.positionX + (faces.width - (faces.width - 0.12)) + 'px');
-
-                    // $leftEye.append($eyeVertical);
-                    // $leftEye.append($eyeHorizontal);
-                    // $rightEye.append($eyeVertical);
-                    // $rightEye.append($eyeHorizontal);
-
-                    // $('wrapper').append($leftEye);
-                    // $('wrapper').append($rightEye);
-                }, error: function(code, message) {
-                    console.log(message)
-                }
-            });
-        // } catch (error) {
-        // }
-    </script>
 </body>
 
 </html>

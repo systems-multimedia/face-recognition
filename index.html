@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Face Recognition Test</title>
 
     <style>
         * {
@@ -20,6 +20,7 @@
         .face-box {
             border: 1px solid red;
             position: absolute;
+            border-radius: 4px;
         }
 
         .eye-container {
@@ -60,58 +61,60 @@
 </head>
 
 <body>
+
+
     <div id="wrapper">
         <img id="picture" src="./img/face1.jpg" alt="">
         <input type="number" name="" id="rotating" placeholder="Rotar">
-        <div class="eye-container" id="track1">
-            <!-- <div class="eye-horizontal-box"></div>
-            <div class="eye-vertical-box"></div> -->
-        </div>
-        <div class="eye-container" id="track2">
-            <!-- <div class="eye-horizontal-box"></div>
-            <div class="eye-vertical-box"></div> -->
-        </div>
+        <!-- <input type="number" name="" id="imageNumber" placeholder="Número de Imagen (entre 1 y 3)"
+            style="position: absolute; top: 50px; right: 20px;" min="1" max="3"> -->
+        <div class="eye-container" id="track1" draggable="true"></div>
+        <div class="eye-container" id="track2" draggable="true"></div>
     </div>
+
+
+    <!-- Script !! -->
+
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="./jquery_facedetec/jquery.facedetection.js"></script>
     <script>
         var clickCount = 0;
         var added = [false, false];
         var appear = false;
-        var glassWidth;
+        var glassWidth = 0;
+        var glassLeft = 0;
         var containers = document.querySelectorAll('.eye-container');
+        var imageNumber = document.querySelector('#imageNumber');
         for (let i = 0; i < containers.length; i++) {
             containers[i].remove();
         }
-        $('#picture').faceDetection({
-            complete: function (faces) {
-                console.log(faces);
-                $div = $('<div>', { "class": "face-box", "id": "face-box" });
-                $div.css('top', faces[0].positionY);
-                $div.css('left', faces[0].positionX);
-                $div.css('width', faces[0].width);
-                $div.css('height', faces[0].height);
-                $('#wrapper').append($div);
-                glassWidth = faces[0].width;
-            }, error: function (code, message) {
-                console.log(message)
-            }
-        });
+        faceDetect();
         document.querySelector('#rotating').addEventListener('change', (e) => {
             document.querySelector('#picture').style.transform = `rotateZ(${e.target.value}deg)`;
         });
+        // document.querySelector('#imageNumber').addEventListener('change', e => {
+        //     if (e.target.value > 3 || e.target.value < 1) {
+        //         alert('Elija un número del 1 y 3');
+        //         return;
+        //     }
+        //     document.querySelector('#picture').src = `./img/face${e.target.value}.jpg`;
+        //     faceDetect();
+        // });
         document.querySelector('#face-box').addEventListener('click', e => {
-            if (added[clickCount] == false) {
+            if (added[clickCount] == false && clickCount < containers.length) {
                 $('#wrapper').append(containers[clickCount]);
+                containers[clickCount].addEventListener('dragstart', dragStart);
+                containers[clickCount].addEventListener('dragend', dragEnd);
+                containers[clickCount].addEventListener('drag', drag);
                 added[clickCount] = true;
                 move(e.x, e.y);
             }
-            if (clickCount < 1) {
+            if (clickCount < 2) {
                 clickCount++;
             } else {
                 clickCount = 0;
             }
-            if (clickCount === 1 && appear === false) {
+            if (clickCount === 2 && appear === false) {
                 appear = true;
                 $checkButton = $('<button>', { "id": "testButton" });
                 $checkButton.css('position', 'absolute');
@@ -120,7 +123,9 @@
                 $('#wrapper').append($checkButton);
                 document.querySelector('#testButton').addEventListener('click', e => {
                     appenGlass(
+                        containers[0].getBoundingClientRect().left,
                         containers[0].getBoundingClientRect().top,
+                        containers[1].getBoundingClientRect().left,
                         containers[1].getBoundingClientRect().top
                     );
                 })
@@ -132,18 +137,135 @@
                     containers[clickCount].style.top = `${y - (containers[clickCount].getBoundingClientRect().height / 2)}px`;
                 }
             }
-            function appenGlass(y1, y2) {
-                $glass = $('<img>', { "src": "/img/glasses.png" });
-                $glass.src = "/img/glasses.png";
+            function appenGlass(x1, y1, x2, y2) {
+                //Pendiente positiva o negativa
+                var pend = 1;
+                //Cateto Adyacente
+                var Ca = Math.abs(x2 - x1);
+                //Cateto Opuesto
+                var Co = Math.abs(y2 - y1);
+                //Angulo de Inclinación en Radianes
+                var phi = Math.atan(Co / Ca);
+                //De Radianes a Deg
+                phi = phi * (180 / Math.PI);
+
+                glassWidth = glassWidth + (glassWidth * 0.1);
+                glassLeft = glassLeft - 10;
+
+
+                $glass = $('<img>', { "src": "/img/glasses.png", "id": "glass" });
+                $glass.src = "./img/glasses.png";
                 $glass.css('width', glassWidth);
-                $('#face-box').append($glass);
-                if (y1 > y2) {
-                    document.querySelector('#glass').style.top = `${y1 - (document.querySelector('#glass').getBoundingClientRect().height / 2)}px`;
-                } else {
-                    document.querySelector('#glass').style.top = `${y2 - (document.querySelector('#glass').getBoundingClientRect().height / 2)}px`;
+                if (!document.querySelector('#glass')) {
+                    $('#wrapper').append($glass);
                 }
+                var glassImg = document.querySelector('#glass');
+                if (x1 < x2 && y1 > y2) {
+                    glassImg.style.top = `${y2 - (glassImg.getBoundingClientRect().height / 2)}px`;
+                    pend = -1;
+                    console.log('_op_1');
+                } else if (x1 < x2 && y1 < y2) {
+                    glassImg.style.top = `${y1 - (glassImg.getBoundingClientRect().height / 2)}px`;
+                    console.log('_op_2');
+                    console.log(y1);
+                    console.log(y1 - (glassImg.getBoundingClientRect().height / 2));
+                } else if (x2 < x1 && y2 > y1) {
+                    glassImg.style.top = `${y1 - (glassImg.getBoundingClientRect().height / 2)}px`;
+                    pend = -1;
+                    console.log('_op_3');
+                } else if (x2 < x1 && y2 < y1) {
+                    glassImg.style.top = `${y2 - (glassImg.getBoundingClientRect().height / 2)}px`;
+                    console.log('_op_4');
+                }
+                glassImg.style.left = `${glassLeft}px`;
+                glassImg.style.transform = `rotateZ(${phi * pend}deg)`;
+                //JSON
+                measures = {
+                    "Ca": Ca,
+                    "Co": Co,
+                    "Phi": phi,
+                    "x1": x1,
+                    "x2": x2,
+                    "y1": y1,
+                    "y2": y2,
+                    "glassWidth": glassWidth,
+                    "glassLeft": glassLeft,
+                    "pend": pend
+                }
+                console.log(measures);
+                containers[0].remove();
+                containers[1].remove();
+                $('#face-box').css('opacity', 0.3);
+
+                glassImg.addEventListener('dragstart', dragStart);
+                glassImg.addEventListener('dragend', dragEnd);
             }
         });
+
+
+        var glassImg_x = 0;
+        var glassImg_y = 0;
+
+        var drag = function (e) {
+            // console.log('drag');
+            // console.log(e.x);
+            // this.style.left = `${e.x - (this.getBoundingClientRect().width / 2)}px`;
+            // this.style.top = `${e.y  - (this.getBoundingClientRect().height / 2)}px`;
+        }
+
+        var dragStart = function (e) {
+            // console.log('start');
+            setTimeout(() => this.style.display = 'none', 0);
+            glassImg_x = e.x;
+            glassImg_y = e.y;
+            // console.log(`glass x: ${glassImg_x}`)
+            // console.log(`glass y: ${glassImg_y}`)
+        }
+
+        var dragEnd = function (e) {
+            // console.log('end');
+            // console.log(e.x);
+            this.style.display = 'flex';
+            this.style.left = `${this.getBoundingClientRect().left + (e.x - glassImg_x)}px`;
+            this.style.top = `${this.getBoundingClientRect().top + (e.y - glassImg_y)}px`;
+            // console.log(e.x);
+            // console.log(e.y);
+        }
+
+        function faceDetect() {
+            try {
+                $('#picture').faceDetection({
+                    complete: function (faces) {
+                        console.log(faces);
+                        $div = $('<div>', { "class": "face-box", "id": "face-box" });
+                        $div.css('top', faces[0].positionY);
+                        $div.css('left', faces[0].positionX);
+                        $div.css('width', faces[0].width);
+                        $div.css('height', faces[0].height);
+                        $('#wrapper').append($div);
+                        glassWidth = faces[0].width;
+                        glassLeft = faces[0].positionX;
+                    }, 
+                    // error: function (code, message) {
+                    //     alert('Hubo un error!');
+                    //     $retryButton = $('<button>', { "type": "button", "id": "retryButton" });
+                    //     $retryButton.css('position', 'absolute');
+                    //     $retryButton.css('right', 20);
+                    //     $retryButton.appen('Reintentar');
+                    //     $('#wrapper').append($retryButton);
+                    //     document.querySelector('#retryButton').addEventListener('click', () => window.location.reload());
+                    // }
+                });
+            } catch (error) {
+                alert('Hubo un error!');
+                $retryButton = $('<button>', { "type": "button", "id": "retryButton" });
+                $retryButton.css('position', 'absolute');
+                $retryButton.css('right', 20);
+                $retryButton.appen('Reintentar');
+                $('#wrapper').append($retryButton);
+                document.querySelector('#retryButton').addEventListener('click', () => window.location.reload());
+            }
+        }
 
     </script>
 </body>

@@ -38,8 +38,12 @@
             top: 160px;
         }
 
-        .control#widthButton {
+        .control#lessWidthButton {
             top: 180px;
+        }
+
+        .control#moreWidthButton {
+            top: 200px;
         }
 
         .face-box {
@@ -107,7 +111,8 @@
         <button class="control" id="leftButton">Izquierda</button>
         <button class="control" id="upButton">Arriba</button>
         <button class="control" id="downButton">Abajo</button>
-        <button class="control" id="widthButton">Ancho</button>
+        <button class="control" id="lessWidthButton">Reducir Ancho</button>
+        <button class="control" id="moreWidthButton">Aumentar Ancho</button>
 
         <script type="text/javascript">
             const video = document.querySelector('#video');
@@ -268,21 +273,29 @@
 
             const glassImage = document.querySelector('#glass');
 
-            document.querySelector('#leftButton').addEventListener('click', e => {
-                glassImage.style.left = `${glassImage.getBoundingClientRect().left - 1}px`;
+            document.querySelector('button#leftButton').addEventListener('click', e => {
+                glassImage.style.left = `${Number(glassImage.style.left.split('px')[0]) - 1}px`;
             });
 
-            document.querySelector('#rightButton').addEventListener('click', e => {
-                glassImage.style.left = `${glassImage.getBoundingClientRect().left + 1}px`;
+            document.querySelector('button#rightButton').addEventListener('click', e => {
+                glassImage.style.left = `${Number(glassImage.style.left.split('px')[0]) + 1}px`;
             });
 
-            document.querySelector('#upButton').addEventListener('click', e => {
-                glassImage.getBoundingClientRect().top--;
+            document.querySelector('button#upButton').addEventListener('click', e => {
+                glassImage.style.top = `${Number(glassImage.style.top.split('px')[0]) - 1}px`;
             });
 
-            document.querySelector('#downButton').addEventListener('click', e => {
-                glassImage.getBoundingClientRect().top++;
+            document.querySelector('button#downButton').addEventListener('click', e => {
+                glassImage.style.top = `${Number(glassImage.style.top.split('px')[0]) + 1}px`;
             });
+
+            document.querySelector('button#lessWidthButton').addEventListener('click', e => {
+                glassImage.style.width = `${Number(glassImage.style.width.split('px')[0]) - 1}px`;
+            });
+
+            document.querySelector('button#moreWidthButton').addEventListener('click', e => {
+                glassImage.style.width = `${Number(glassImage.style.width.split('px')[0]) + 1}px`;
+            })
         }
 
 

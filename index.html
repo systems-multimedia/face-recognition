@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Face Recognition Test</title>
 
+    <link rel="stylesheet" href="./style/style.css">
     <style>
         * {
             margin: 0;
@@ -15,6 +16,10 @@
 
         img {
             position: absolute;
+        }
+
+        img#glass {
+            transition: 0.15s;
         }
 
         .control {
@@ -45,6 +50,22 @@
         .control#moreWidthButton {
             top: 200px;
         }
+
+        .control#ZRotate {
+            top: 220px;
+        }
+
+        .control#YRotate {
+            top: 240px;
+        }
+
+        /* .control#YLeftRotateButton {
+            top: 260px;
+        }
+
+        .control#YRightRotateButton {
+            top: 280px;
+        } */
 
         .face-box {
             border: 1px solid red;
@@ -92,19 +113,14 @@
 </head>
 
 <body>
-
-
     <div id="wrapper">
-        <!-- <img id="picture" src="./img/face1.jpg" alt=""> -->
-        <input type="number" name="" id="rotating" placeholder="Rotar">
-        <!-- <input type="number" name="" id="imageNumber" placeholder="Número de Imagen (entre 1 y 3)"
-            style="position: absolute; top: 50px; right: 20px;" min="1" max="3"> -->
         <div class="eye-container" id="track1" draggable="true"></div>
         <div class="eye-container" id="track2" draggable="true"></div>
-    </div>
-
-    <section>
-        <video id="video" style="position: absolute; z-index: 80"></video>
+        <div id="video-container">
+            <video id="video" style="position: absolute; z-index: 80"></video>
+        </div>
+        <div class="canvas-container">
+        </div>
         <canvas id="canvas" style="position: absolute; z-index: 80; bottom: 0"></canvas>
         <button id="snapButton" style="position: absolute; z-index: 80; right: 20px; top: 60px;">Snap</button>
         <button class="control" id="rightButton">Derecha</button>
@@ -113,7 +129,12 @@
         <button class="control" id="downButton">Abajo</button>
         <button class="control" id="lessWidthButton">Reducir Ancho</button>
         <button class="control" id="moreWidthButton">Aumentar Ancho</button>
+        <input type="number" class="control" id="ZRotate" placeholder="Girar">
+        <input type="number" class="control" id="YRotate" placeholder="Rotar">
+    </div>
 
+
+    <section>
         <script type="text/javascript">
             const video = document.querySelector('#video');
             const canvas = document.querySelector('#canvas');
@@ -127,7 +148,6 @@
 
             function streamWebCam(stream) {
                 console.log(stream);
-                // console.log(window.URL.createObjectURL(stream))
                 video.srcObject = stream;
                 video.play();
             }
@@ -139,11 +159,9 @@
             document.querySelector('#snapButton').addEventListener('click', (e) => {
                 canvas.width = video.clientWidth;
                 canvas.height = video.clientHeight;
-                context.drawImage(video, 100, 100);
+                context.drawImage(video, 0, 0);
 
                 $canvasImg = $('#canvas');
-                $canvasImg.faceDetect
-                // console.log($canvasImg);
                 faceDetect($canvasImg, $canvasImg);
             })
         </script>
@@ -160,18 +178,17 @@
         var appear = false;
         var glassWidth = 0;
         var glassLeft = 0;
+        var _phi = 0;
+        var sigma = 0;
         var containers = document.querySelectorAll('.eye-container');
         var imageNumber = document.querySelector('#imageNumber');
-        var controls = document.querySelectorAll('button.control');
+        var controls = document.querySelectorAll('.control');
         for (let i = 0; i < containers.length; i++) {
             containers[i].remove();
         }
         for(let i = 0; i < controls.length; i++) {
             controls[i].remove();
         }
-        document.querySelector('#rotating').addEventListener('change', (e) => {
-            document.querySelector('#picture').style.transform = `rotateZ(${e.target.value}deg)`;
-        });
 
         var glassImg_x = 0;
         var glassImg_y = 0;
@@ -295,7 +312,19 @@
 
             document.querySelector('button#moreWidthButton').addEventListener('click', e => {
                 glassImage.style.width = `${Number(glassImage.style.width.split('px')[0]) + 1}px`;
-            })
+            });
+
+            document.querySelector('input#ZRotate').addEventListener('change', e => {
+                _phi = _phi + Number(e.target.value);
+                console.log(_phi);
+                glassImage.style.transform = `rotateZ(${_phi}deg) rotateY(${sigma}deg)`;
+            });
+            
+            document.querySelector('input#YRotate').addEventListener('change', e => {
+                sigma = Number(e.target.value);
+                console.log(sigma);
+                glassImage.style.transform = `rotateZ(${_phi}deg) rotateY(${sigma}deg)`;
+            });
         }
 
 
@@ -310,6 +339,7 @@
             var phi = Math.atan(Co / Ca);
             //De Radianes a Deg
             phi = phi * (180 / Math.PI);
+            _phi = phi;
 
             glassWidth = glassWidth + (glassWidth * 0.1);
             glassLeft = glassLeft - 10;
@@ -362,8 +392,6 @@
             $('#face-box').css('opacity', 0.3);
 
             activeControlButton();
-            // glassImg.addEventListener('dragstart', dragStart);
-            // glassImg.addEventListener('dragend', dragEnd);
         }
 
     </script>

@@ -1,0 +1,36 @@
+#wrapper {
+  width: 100%;
+  height: 100vh;
+  background-image: url("../img/bg1.jpg");
+  background-size: cover;
+  background-position: center;
+  padding-top: 30px;
+}
+
+#video-container, .canvas-container {
+  max-width: 50%;
+  min-width: 300px;
+  max-height: 75vh;
+  min-height: 350px;
+  margin: auto;
+  display: block;
+  position: relative;
+  overflow: hidden;
+  -webkit-box-shadow: 5px 5px 4px rgba(255, 255, 255, 0.2);
+          box-shadow: 5px 5px 4px rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+}
+
+#video-container #video, .canvas-container #video {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  vertical-align: baseline;
+}
+
+#video-container #canvas, .canvas-container #canvas {
+  left: 0;
+}
+/*# sourceMappingURL=style.css.map */

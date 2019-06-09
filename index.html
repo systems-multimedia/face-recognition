@@ -120,8 +120,8 @@
             <video id="video" style="position: absolute; z-index: 80"></video>
         </div>
         <div class="canvas-container">
+            <canvas id="canvas" style="position: absolute; z-index: 80; bottom: 0"></canvas>
         </div>
-        <canvas id="canvas" style="position: absolute; z-index: 80; bottom: 0"></canvas>
         <button id="snapButton" style="position: absolute; z-index: 80; right: 20px; top: 60px;">Snap</button>
         <button class="control" id="rightButton">Derecha</button>
         <button class="control" id="leftButton">Izquierda</button>
@@ -162,7 +162,7 @@
                 context.drawImage(video, 0, 0);
 
                 $canvasImg = $('#canvas');
-                faceDetect($canvasImg, $canvasImg);
+                faceDetect($canvasImg, $('.canvas-container'));
             })
         </script>
     </section>
@@ -228,7 +228,9 @@
                         $div.css('left', faces[0].positionX);
                         $div.css('width', faces[0].width);
                         $div.css('height', faces[0].height);
-                        $('#wrapper').append($div);
+                        console.log(faces[0].positionX);
+                        console.log(faces[0].positionY);
+                        $parent.append($div);
                         glassWidth = faces[0].width;
                         glassLeft = faces[0].positionX;
                         activeFaceBox();
@@ -273,7 +275,8 @@
                             containers[0].getBoundingClientRect().left,
                             containers[0].getBoundingClientRect().top,
                             containers[1].getBoundingClientRect().left,
-                            containers[1].getBoundingClientRect().top
+                            containers[1].getBoundingClientRect().top,
+                            $('.canvas-container')
                         );
                     })
                 }
@@ -328,7 +331,7 @@
         }
 
 
-        function appenGlass(x1, y1, x2, y2) {
+        function appenGlass(x1, y1, x2, y2, $parent) {
             //Pendiente positiva o negativa
             var pend = 1;
             //Cateto Adyacente
@@ -351,7 +354,7 @@
             $glass.css('position', 'absolute');
             $glass.css('z-index', 100);
             if (!document.querySelector('#glass')) {
-                $('#wrapper').append($glass);
+                $parent.append($glass);
             }
             var glassImg = document.querySelector('#glass');
             if (x1 < x2 && y1 > y2) {

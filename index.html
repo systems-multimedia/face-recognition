@@ -71,7 +71,7 @@
             <label class="control hidden" for="YRotate">
                 <h3>Rotar</h3>
             </label>
-            <input type="number" class="control" id="YRotate" placeholder="Rotar">
+            <input type="number" class="control hidden" id="YRotate" placeholder="Rotar">
         </div>
     </div>
     
@@ -303,6 +303,8 @@
         }
         function appenGlass(x1, y1, x2, y2, $parent) {
             testButton.className = 'hidden';
+            document.querySelector('#touchEyesMsg').className += ' hidden';
+            document.querySelector('#touchEyesMsg').remove();
             //Pendiente positiva o negativa
             var pend = 1;
             //Cateto Adyacente

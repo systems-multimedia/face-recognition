@@ -1,36 +1,97 @@
 #wrapper {
   width: 100%;
-  height: 100vh;
-  background-image: url("../img/bg1.jpg");
-  background-size: cover;
-  background-position: center;
+  height: auto;
+  min-height: 120vh;
   padding-top: 30px;
+  position: relative;
+  overflow: auto;
 }
 
-#video-container, .canvas-container {
-  max-width: 50%;
+#video-container, .canvas-container, .controls-container {
+  width: 50%;
+  max-width: 500px;
   min-width: 300px;
   max-height: 75vh;
   min-height: 350px;
   margin: auto;
   display: block;
-  position: relative;
   overflow: hidden;
   -webkit-box-shadow: 5px 5px 4px rgba(255, 255, 255, 0.2);
           box-shadow: 5px 5px 4px rgba(255, 255, 255, 0.2);
   border-radius: 5px;
 }
 
-#video-container #video, .canvas-container #video {
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  margin: auto;
-  vertical-align: baseline;
+@media (max-width: 500px) {
+  #video-container, .canvas-container, .controls-container {
+    min-height: 200px;
+  }
 }
 
-#video-container #canvas, .canvas-container #canvas {
-  left: 0;
+#video-container #video, #video-container #canvas, .canvas-container #video, .canvas-container #canvas, .controls-container #video, .controls-container #canvas {
+  margin: auto;
+  width: 100%;
+  height: 100%;
+}
+
+.controls-container {
+  height: auto;
+  min-height: auto;
+  max-height: none;
+  padding: 0.7rem 0;
+}
+
+.controls-container button, .controls-container input, .controls-container label {
+  display: block;
+  width: 80%;
+  height: 40px;
+  border: 0;
+  margin: 5px auto;
+  border-radius: 3px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.controls-container label {
+  display: -webkit-box !important;
+  display: -ms-flexbox !important;
+  display: flex !important;
+}
+
+.controls-container label * {
+  margin: auto;
+}
+
+.controls-container button {
+  background: #1b76ec;
+  color: white;
+  cursor: pointer;
+}
+
+.controls-container button:hover {
+  background: #0d63d3;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.error-message, .instruction-message {
+  width: 95%;
+  margin: 0.5rem auto;
+  text-align: center;
+  border-radius: 4px;
+  padding: 0.6rem 0;
+}
+
+.error-message {
+  background: #ffd5d5;
+  color: #a82a2a;
+  border: 1px solid rgba(139, 0, 0, 0.164);
+}
+
+.instruction-message {
+  background: #d5ffdc;
+  color: #125328;
+  border: 1px solid rgba(0, 139, 12, 0.164);
 }
 /*# sourceMappingURL=style.css.map */

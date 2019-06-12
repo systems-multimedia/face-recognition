@@ -14,58 +14,10 @@
             padding: 0;
         }
 
-        img {
-            position: absolute;
-        }
-
         img#glass {
+            position: absolute;
             transition: 0.15s;
         }
-
-        .control {
-            position: absolute;
-            right: 20px;
-        }
-
-        .control#downButton {
-            top: 100px;
-        }
-
-        .control#upButton {
-            top: 120px;
-        }
-
-        .control#leftButton {
-            top: 140px;
-        }
-
-        .control#rightButton {
-            top: 160px;
-        }
-
-        .control#lessWidthButton {
-            top: 180px;
-        }
-
-        .control#moreWidthButton {
-            top: 200px;
-        }
-
-        .control#ZRotate {
-            top: 220px;
-        }
-
-        .control#YRotate {
-            top: 240px;
-        }
-
-        /* .control#YLeftRotateButton {
-            top: 260px;
-        }
-
-        .control#YRightRotateButton {
-            top: 280px;
-        } */
 
         .face-box {
             border: 1px solid red;
@@ -76,38 +28,14 @@
 
         .eye-container {
             display: flex;
-            width: 30px;
-            height: 30px;
+            width: 10px;
+            height: 10px;
             position: absolute;
             align-content: center;
             justify-content: center;
             transition: 0.3s;
             background: rgb(241, 38, 116);
             z-index: 100;
-        }
-
-        .eye-container .eye-vertical-box {
-            height: 100%;
-            width: 5px;
-            margin: auto;
-            background: rgb(241, 38, 116);
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
-        }
-
-        .eye-container .eye-horizontal-box {
-            height: 5px;
-            width: 100%;
-            margin: auto;
-            background: rgb(241, 38, 116);
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
         }
     </style>
 </head>
@@ -117,58 +45,93 @@
         <div class="eye-container" id="track1" draggable="true"></div>
         <div class="eye-container" id="track2" draggable="true"></div>
         <div id="video-container">
-            <video id="video" style="position: absolute; z-index: 80"></video>
+            <video id="video"></video>
         </div>
-        <div class="canvas-container">
-            <canvas id="canvas" style="position: absolute; z-index: 80; bottom: 0"></canvas>
+        <div class="canvas-container hidden">
+            <canvas id="canvas"></canvas>
         </div>
-        <button id="snapButton" style="position: absolute; z-index: 80; right: 20px; top: 60px;">Snap</button>
-        <button class="control" id="rightButton">Derecha</button>
-        <button class="control" id="leftButton">Izquierda</button>
-        <button class="control" id="upButton">Arriba</button>
-        <button class="control" id="downButton">Abajo</button>
-        <button class="control" id="lessWidthButton">Reducir Ancho</button>
-        <button class="control" id="moreWidthButton">Aumentar Ancho</button>
-        <input type="number" class="control" id="ZRotate" placeholder="Girar">
-        <input type="number" class="control" id="YRotate" placeholder="Rotar">
+        <div class="controls-container">
+            <p class="error-message hidden" id="snapErrorMsg">Hubo un problema al tomar la foto, ¡intentalo nuevamente!
+            </p>
+            <button id="snapButton">Capturar</button>
+            <button id="retryButton" class="hidden">Reintentar</button>
+            <p class="instruction-message hidden" id="touchEyesMsg">¡Genial! Ahora haz click sobre tus ojos y presiona 'Probar'</p>
+            <button id="testButton" class="hidden">Probar</button>
+            <label class="control hidden"><h4>¡Ajusta los lentes a tu gusto!</h4></label>
+            <button class="control hidden" id="rightButton">Derecha</button>
+            <button class="control hidden" id="leftButton">Izquierda</button>
+            <button class="control hidden" id="upButton">Arriba</button>
+            <button class="control hidden" id="downButton">Abajo</button>
+            <button class="control hidden" id="lessWidthButton">Reducir Ancho</button>
+            <button class="control hidden" id="moreWidthButton">Aumentar Ancho</button>
+            <label class="control hidden" for="ZRotate">
+                <h3>Girar</h3>
+            </label>
+            <input type="number" class="control hidden" id="ZRotate" placeholder="Girar">
+            <label class="control hidden" for="YRotate">
+                <h3>Rotar</h3>
+            </label>
+            <input type="number" class="control" id="YRotate" placeholder="Rotar">
+        </div>
     </div>
-
-
-    <section>
-        <script type="text/javascript">
-            const video = document.querySelector('#video');
-            const canvas = document.querySelector('#canvas');
-            const context = canvas.getContext('2d');
-
-            navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.oGetUserMedia || navigator.msGetUserMedia;
-
-            if (navigator.getUserMedia) {
-                navigator.getUserMedia({ video: true }, streamWebCam, throwError);
-            }
-
-            function streamWebCam(stream) {
-                console.log(stream);
-                video.srcObject = stream;
-                video.play();
-            }
-
-            function throwError(e) {
-                alert(e.name);
-            }
-
-            document.querySelector('#snapButton').addEventListener('click', (e) => {
-                canvas.width = video.clientWidth;
-                canvas.height = video.clientHeight;
-                context.drawImage(video, 0, 0);
-
-                $canvasImg = $('#canvas');
-                faceDetect($canvasImg, $('.canvas-container'));
-            })
-        </script>
-    </section>
-
-
+    
     <!-- Script !! -->
+    <script type="text/javascript">
+
+        window.onresize = () => {
+            window.location.reload();
+        }
+        const instructionMessage = document.querySelectorAll('.instruction-message');
+        const controlsContainer = document.querySelector('.controls-container');
+        const canvasContainer = document.querySelector('.canvas-container');
+        const videoContainer = document.querySelector('#video-container');
+        const errorMessage = document.querySelectorAll('.error-message');
+        const retryButton = document.querySelector('button#retryButton');
+        const testButton = document.querySelector('button#testButton');
+        const snapButton = document.querySelector('button#snapButton');
+        const canvas = document.querySelector('#canvas');
+        const video = document.querySelector('#video');
+        const context = canvas.getContext('2d');
+
+        errorMessage.forEach(function (message) {
+            message.remove();
+        });
+
+        instructionMessage.forEach(function (message) {
+            message.remove();
+        });
+
+        navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.oGetUserMedia || navigator.msGetUserMedia;
+
+        if (navigator.getUserMedia) {
+            navigator.getUserMedia({ video: true }, streamWebCam, throwError);
+        }
+
+        function streamWebCam(stream) {
+            // console.log(stream);
+            video.srcObject = stream;
+            video.play();
+        }
+
+        function throwError(e) {
+            alert(e.name);
+        }
+
+        snapButton.addEventListener('click', (e) => {
+            canvas.width = video.clientWidth;
+            canvas.height = video.clientHeight;
+            videoContainer.remove();
+            canvasContainer.className = 'canvas-container';
+            context.drawImage(video, 0, 0, document.querySelector('.canvas-container').clientWidth, document.querySelector('.canvas-container').clientHeight);
+
+            $canvasImg = $('#canvas');
+            faceDetect($canvasImg, $('.canvas-container'));
+            snapButton.className = 'hidden';
+            retryButton.className = '';
+        })
+    </script>
+
+
 
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="./jquery_facedetec/jquery.facedetection.js"></script>
@@ -186,7 +149,7 @@
         for (let i = 0; i < containers.length; i++) {
             containers[i].remove();
         }
-        for(let i = 0; i < controls.length; i++) {
+        for (let i = 0; i < controls.length; i++) {
             controls[i].remove();
         }
 
@@ -194,6 +157,8 @@
         var glassImg_y = 0;
 
         function move(x, y) {
+            // console.log(`container[${clickCount}].left = ${x}`);
+            // console.log(`container[${clickCount}].top = ${y}`);
             if (containers[clickCount]) {
                 containers[clickCount].style.left = `${x - (containers[clickCount].getBoundingClientRect().width / 2)}px`;
                 containers[clickCount].style.top = `${y - (containers[clickCount].getBoundingClientRect().height / 2)}px`;
@@ -216,33 +181,40 @@
         }
 
         function faceDetect($element, $parent) {
-            if(document.querySelector('#face-box')) {
+            if (document.querySelector('#face-box')) {
                 document.querySelector('#face-box').remove();
             }
             try {
                 $element.faceDetection({
                     complete: function (faces) {
-                        console.log(faces);
+                        // console.log(faces);
                         $div = $('<div>', { "class": "face-box", "id": "face-box" });
                         $div.css('top', faces[0].positionY);
                         $div.css('left', faces[0].positionX);
                         $div.css('width', faces[0].width);
                         $div.css('height', faces[0].height);
-                        console.log(faces[0].positionX);
-                        console.log(faces[0].positionY);
+                        // console.log(faces[0].positionX);
+                        // console.log(faces[0].positionY);
                         $parent.append($div);
                         glassWidth = faces[0].width;
                         glassLeft = faces[0].positionX;
+                        instructionMessage.forEach(message => {
+                            if(message.id === 'touchEyesMsg') {
+                                message.classList = 'instruction-message';
+                                controlsContainer.insertBefore(message, controlsContainer.firstElementChild);
+                            }
+                        });
                         activeFaceBox();
                     },
                 });
             } catch (error) {
-                alert('Hubo un error!');
-                $retryButton = $('<button>', { "type": "button", "id": "retryButton" });
-                $retryButton.css('position', 'absolute');
-                $retryButton.css('right', 20);
-                $retryButton.append('Reintentar');
-                $('#wrapper').append($retryButton);
+                errorMessage.forEach(message => {
+                    if (message.id === 'snapErrorMsg') {
+                        message.className = 'error-message';
+                        controlsContainer.insertBefore(message, controlsContainer.firstElementChild);
+                    }
+                })
+                retryButton.className = '';
                 document.querySelector('#retryButton').addEventListener('click', () => window.location.reload());
             }
         }
@@ -265,11 +237,7 @@
                 }
                 if (clickCount === 2 && appear === false) {
                     appear = true;
-                    $checkButton = $('<button>', { "id": "testButton" });
-                    $checkButton.css('position', 'absolute');
-                    $checkButton.css('right', 20);
-                    $checkButton.append('Probar');
-                    $('#wrapper').append($checkButton);
+                    testButton.className = '';
                     document.querySelector('#testButton').addEventListener('click', e => {
                         appenGlass(
                             containers[0].getBoundingClientRect().left,
@@ -285,53 +253,56 @@
         }
 
         function activeControlButton() {
-            if(!document.querySelector('.control')) {
-                for(let i = 0; i < controls.length; i ++) {
-                    $('#wrapper').append(controls[i]);
+            if (!document.querySelector('.control')) {
+                for (let i = 0; i < controls.length; i++) {
+                    controls[i].className = 'control';
+                    $('.controls-container').append(controls[i]);
                 }
             }
 
             const glassImage = document.querySelector('#glass');
 
-            document.querySelector('button#leftButton').addEventListener('click', e => {
+            document.querySelector('button#leftButton').addEventListener('mousedown', e => {
                 glassImage.style.left = `${Number(glassImage.style.left.split('px')[0]) - 1}px`;
             });
 
-            document.querySelector('button#rightButton').addEventListener('click', e => {
+            document.querySelector('button#rightButton').addEventListener('mousedown', e => {
                 glassImage.style.left = `${Number(glassImage.style.left.split('px')[0]) + 1}px`;
             });
 
-            document.querySelector('button#upButton').addEventListener('click', e => {
+            document.querySelector('button#upButton').addEventListener('mousedown', e => {
                 glassImage.style.top = `${Number(glassImage.style.top.split('px')[0]) - 1}px`;
             });
 
-            document.querySelector('button#downButton').addEventListener('click', e => {
+            document.querySelector('button#downButton').addEventListener('mousedown', e => {
                 glassImage.style.top = `${Number(glassImage.style.top.split('px')[0]) + 1}px`;
             });
 
-            document.querySelector('button#lessWidthButton').addEventListener('click', e => {
+            document.querySelector('button#lessWidthButton').addEventListener('mousedown', e => {
                 glassImage.style.width = `${Number(glassImage.style.width.split('px')[0]) - 1}px`;
             });
 
-            document.querySelector('button#moreWidthButton').addEventListener('click', e => {
+            document.querySelector('button#moreWidthButton').addEventListener('mousedown', e => {
                 glassImage.style.width = `${Number(glassImage.style.width.split('px')[0]) + 1}px`;
             });
 
+            document.querySelector('input#ZRotate').value = _phi;
+            document.querySelector('input#YRotate').value  = sigma;
             document.querySelector('input#ZRotate').addEventListener('change', e => {
-                _phi = _phi + Number(e.target.value);
-                console.log(_phi);
+                _phi = Number(e.target.value);
+                // console.log(_phi);
                 glassImage.style.transform = `rotateZ(${_phi}deg) rotateY(${sigma}deg)`;
             });
-            
+
             document.querySelector('input#YRotate').addEventListener('change', e => {
                 sigma = Number(e.target.value);
-                console.log(sigma);
+                // console.log(sigma);
                 glassImage.style.transform = `rotateZ(${_phi}deg) rotateY(${sigma}deg)`;
             });
+
         }
-
-
         function appenGlass(x1, y1, x2, y2, $parent) {
+            testButton.className = 'hidden';
             //Pendiente positiva o negativa
             var pend = 1;
             //Cateto Adyacente
@@ -354,25 +325,28 @@
             $glass.css('position', 'absolute');
             $glass.css('z-index', 100);
             if (!document.querySelector('#glass')) {
-                $parent.append($glass);
+                $('#wrapper').append($glass);
             }
             var glassImg = document.querySelector('#glass');
             if (x1 < x2 && y1 > y2) {
-                glassImg.style.top = `${y2 - (glassImg.getBoundingClientRect().height / 2)}px`;
+                glassImg.style.top = `${y2}px`;
                 pend = -1;
                 console.log('_op_1');
             } else if (x1 < x2 && y1 < y2) {
-                glassImg.style.top = `${y1 - (glassImg.getBoundingClientRect().height / 2)}px`;
+                glassImg.style.top = `${y1}px`;
                 console.log('_op_2');
-                console.log(y1);
-                console.log(y1 - (glassImg.getBoundingClientRect().height / 2));
+                // console.log(y1);
+                // console.log(y1);
             } else if (x2 < x1 && y2 > y1) {
-                glassImg.style.top = `${y1 - (glassImg.getBoundingClientRect().height / 2)}px`;
+                glassImg.style.top = `${y1}px`;
                 pend = -1;
                 console.log('_op_3');
             } else if (x2 < x1 && y2 < y1) {
-                glassImg.style.top = `${y2 - (glassImg.getBoundingClientRect().height / 2)}px`;
+                glassImg.style.top = `${y2}px`;
                 console.log('_op_4');
+            } else if (y1 == y2) {
+                glassImg.style.top = `${y2}px`;
+                console.log('_op_5');
             }
             glassImg.style.left = `${glassLeft}px`;
             glassImg.style.transform = `rotateZ(${phi * pend}deg)`;

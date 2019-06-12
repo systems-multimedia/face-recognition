@@ -1,36 +1,97 @@
 #wrapper {
     width: 100%;
-    height: 100vh;
-    background-image: url('../img/bg1.jpg');
-    background-size: cover;
-    background-position: center;
+    height: auto;
+    min-height: 120vh;
+    // background-image: url('../img/bg1.jpg');
+    // background-size: cover;
+    // background-position: center;
     padding-top: 30px;
+    position: relative;
+    overflow: auto;
 }
 
-#video-container, .canvas-container{
-    max-width: 50%;
+#video-container, .canvas-container, .controls-container{
+    width: 50%;
+    max-width: 500px;
     min-width: 300px;
     max-height: 75vh;
     min-height: 350px;
     margin: auto;
     display: block;
-    position: relative;
     overflow: hidden;
     box-shadow: 5px 5px 4px rgba(255,255,255,0.2);
     border-radius: 5px;
 
-    #video {
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        margin: auto;
-        vertical-align: baseline;
+    @media (max-width: 500px) {
+        min-height: 200px;
     }
 
-    #canvas {
-        left: 0;
+    #video, #canvas {
+        margin: auto;
+        width: 100%; 
+        height: 100%;
     }
+}
+
+.controls-container {
+
+    height: auto;
+    min-height: auto;
+    max-height: none;
+    padding: 0.7rem 0;
+
+    button, input, label {
+        display: block;
+        width: 80%;
+        height: 40px;
+        border: 0;
+        margin: 5px auto;
+        border-radius: 3px;
+        text-align: center;
+        text-transform: uppercase;
+    }
+
+    label {
+        display: flex !important;
+
+        * {
+            margin: auto;
+        }
+    }
+
+    button {
+        background: rgb(27, 118, 236);
+        color: white;
+        cursor: pointer;
+        
+        &:hover {
+            background: rgb(13, 99, 211);
+        }
+    }
+}
+
+.hidden {
+    display: none !important;
+}
+
+.error-message, .instruction-message {
+    width: 95%;
+    margin: 0.5rem auto;
+    text-align: center;
+    border-radius: 4px;
+    padding: 0.6rem 0;
+}
+
+.error-message {
+    background: rgb(255, 213, 213);
+    color: rgb(168, 42, 42);
+    border: 1px solid rgba(139, 0, 0, 0.164);
+}
+
+.instruction-message {
+    background: rgb(213, 255, 220);
+    color: rgb(18, 83, 40);
+    border: 1px solid rgba(0, 139, 12, 0.164);
 }
 // canvas {
 // //     max-width: 50%;

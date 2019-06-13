@@ -20,4 +20,4 @@
             <li>Para rotar el lente en sentido horario, reducir el valor de la entrada 'rotar'</li>
         </ul>
     </li>
-</u>
+</ul>

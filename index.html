@@ -8,12 +8,8 @@
     <title>Face Recognition Test</title>
 
     <link rel="stylesheet" href="./style/style.css">
+    <link rel="stylesheet" href="./node_modules/font-awesome/css/font-awesome.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-        }
-
         img#glass {
             position: absolute;
             transition: 0.15s;
@@ -51,30 +47,83 @@
             <canvas id="canvas"></canvas>
         </div>
         <div class="controls-container">
-            <p class="error-message hidden" id="snapErrorMsg">Hubo un problema al tomar la foto, ¡intentalo nuevamente!
-            </p>
+            <div id="message-container">
+                <p class="error-message hidden" id="noCameraErrorMsg">Tu dispositio no es compatible para realizar la operación
+                </p>
+                <p class="error-message hidden" id="snapErrorMsg">Hubo un problema al tomar la foto, ¡intentalo
+                    nuevamente!
+                </p>
+                <p class="instruction-message hidden" id="touchEyesMsg">¡Genial! Ahora haz click sobre tus ojos y
+                    presiona 'Probar'</p>
+            </div>
+            <label for="toggleInstructions" class="btn">
+                <h4>Instrucciones</h4>
+            </label>
+            <input type="checkbox" id="toggleInstructions" class="hidden">
+            <div id="instructions">
+                <ul>
+                    <li>- Capturar Imagen desde webcam
+                        <ul>
+                            <li>- Si hay un error, presionar 'reintentar'</li>
+                            <li>- Si desea tomar otra foto, presionar 'reintentar'</li>
+                        </ul>
+                    </li>
+                    <li>- El rostro reconocido será resaltado por un cuadro de borde rojo </li>
+                    <li>- Hacer click sobre los ojos </li>
+                    <li>- Presionar 'probar'
+                        <ul>
+                            <li>- Puede mover los lentes usando los botones de dirección</li>
+                            <li>- Para girar o rotar el lente presionando los botones correspondientes</li>
+                            <hr>
+                            <li><b>Nota:</b></li>
+                            <li>Girar es para girar en sentido horario o antihorario</li>
+                            <li>Rotar es para girar en sentido horario o antihorario de forma tridimensional</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
             <button id="snapButton">Capturar</button>
             <button id="retryButton" class="hidden">Reintentar</button>
-            <p class="instruction-message hidden" id="touchEyesMsg">¡Genial! Ahora haz click sobre tus ojos y presiona 'Probar'</p>
             <button id="testButton" class="hidden">Probar</button>
-            <label class="control hidden"><h4>¡Ajusta los lentes a tu gusto!</h4></label>
-            <button class="control hidden" id="rightButton">Derecha</button>
-            <button class="control hidden" id="leftButton">Izquierda</button>
-            <button class="control hidden" id="upButton">Arriba</button>
-            <button class="control hidden" id="downButton">Abajo</button>
-            <button class="control hidden" id="lessWidthButton">Reducir Ancho</button>
-            <button class="control hidden" id="moreWidthButton">Aumentar Ancho</button>
-            <label class="control hidden" for="ZRotate">
-                <h3>Girar</h3>
+            <label class="control hidden" id="titleLabel">
+                <h4>¡Ajusta los lentes a tu gusto!</h4>
             </label>
-            <input type="number" class="control hidden" id="ZRotate" placeholder="Girar">
-            <label class="control hidden" for="YRotate">
-                <h3>Rotar</h3>
-            </label>
-            <input type="number" class="control hidden" id="YRotate" placeholder="Rotar">
+            <div id="mainbox">
+                <div class="box" id="arrows">
+                    <button class="control control-move hidden" id="upButton"><i class="fa fa-angle-up"></i></button>
+                    <div class="control-group hidden" id="leftRightGroup">
+                        <button class="control control-move" id="leftButton"><i class="fa fa-angle-left"></i></button>
+                        <button class="control control-move" id="rightButton"><i class="fa fa-angle-right"></i></button>
+                    </div>
+                    <button class="control control-move hidden" id="downButton"><i
+                            class="fa fa-angle-down"></i></button>
+                </div>
+                <div class="box" id="width">
+                    <button class="control hidden" id="lessWidthButton">Reducir Ancho</button>
+                    <button class="control hidden" id="moreWidthButton">Aumentar Ancho</button>
+                </div>
+                <div class="box" id="rotation">
+                    <label class="control hidden" id="zLabel">
+                        <h4>Girar</h4>
+                    </label>
+                    <div class="control-group hidden" id="ZRotationGroup">
+                        <button class="control control-move" id="ZRotateLeft"><i class="fa fa-undo"></i></button>
+                        <button class="control control-move" id="ZRotateRight"><i
+                                class="fa fa-rotate-right"></i></button>
+                    </div>
+                    <label class="control hidden" id="yLabel">
+                        <h4>Rotar</h4>
+                    </label>
+                    <div class="control-group hidden" id="YRotationGroup">
+                        <button class="control control-move" id="YRotateLeft"><i class="fa fa-undo"></i></button>
+                        <button class="control control-move" id="YRotateRight"><i
+                                class="fa fa-rotate-right"></i></button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    
+
     <!-- Script !! -->
     <script type="text/javascript">
 
@@ -83,6 +132,7 @@
         }
         const instructionMessage = document.querySelectorAll('.instruction-message');
         const controlsContainer = document.querySelector('.controls-container');
+        const messageContainer = document.querySelector('#message-container');
         const canvasContainer = document.querySelector('.canvas-container');
         const videoContainer = document.querySelector('#video-container');
         const errorMessage = document.querySelectorAll('.error-message');
@@ -92,6 +142,7 @@
         const canvas = document.querySelector('#canvas');
         const video = document.querySelector('#video');
         const context = canvas.getContext('2d');
+        const parent = [];
 
         errorMessage.forEach(function (message) {
             message.remove();
@@ -114,7 +165,12 @@
         }
 
         function throwError(e) {
-            alert(e.name);
+            errorMessage.forEach(message => {
+                if (message.id === 'noCameraErrorMsg') {
+                    message.className = 'error-message';
+                    messageContainer.append(message);
+                }
+            });
         }
 
         snapButton.addEventListener('click', (e) => {
@@ -150,6 +206,7 @@
             containers[i].remove();
         }
         for (let i = 0; i < controls.length; i++) {
+            parent[i] = controls[i].parentNode;
             controls[i].remove();
         }
 
@@ -157,8 +214,6 @@
         var glassImg_y = 0;
 
         function move(x, y) {
-            // console.log(`container[${clickCount}].left = ${x}`);
-            // console.log(`container[${clickCount}].top = ${y}`);
             if (containers[clickCount]) {
                 containers[clickCount].style.left = `${x - (containers[clickCount].getBoundingClientRect().width / 2)}px`;
                 containers[clickCount].style.top = `${y - (containers[clickCount].getBoundingClientRect().height / 2)}px`;
@@ -187,21 +242,18 @@
             try {
                 $element.faceDetection({
                     complete: function (faces) {
-                        // console.log(faces);
                         $div = $('<div>', { "class": "face-box", "id": "face-box" });
                         $div.css('top', faces[0].positionY);
                         $div.css('left', faces[0].positionX);
                         $div.css('width', faces[0].width);
                         $div.css('height', faces[0].height);
-                        // console.log(faces[0].positionX);
-                        // console.log(faces[0].positionY);
                         $parent.append($div);
                         glassWidth = faces[0].width;
                         glassLeft = faces[0].positionX;
                         instructionMessage.forEach(message => {
-                            if(message.id === 'touchEyesMsg') {
+                            if (message.id === 'touchEyesMsg') {
                                 message.classList = 'instruction-message';
-                                controlsContainer.insertBefore(message, controlsContainer.firstElementChild);
+                                messageContainer.append(message);
                             }
                         });
                         activeFaceBox();
@@ -211,9 +263,9 @@
                 errorMessage.forEach(message => {
                     if (message.id === 'snapErrorMsg') {
                         message.className = 'error-message';
-                        controlsContainer.insertBefore(message, controlsContainer.firstElementChild);
+                        messageContainer.append(message);
                     }
-                })
+                });
                 retryButton.className = '';
                 document.querySelector('#retryButton').addEventListener('click', () => window.location.reload());
             }
@@ -253,11 +305,38 @@
         }
 
         function activeControlButton() {
+            const lrGroup = document.querySelector('#leftRightGroup');
+            const yGroup = document.querySelector('#YRotationGroup');
+            const zGroup = document.querySelector('#ZRotationGroup');
             if (!document.querySelector('.control')) {
-                for (let i = 0; i < controls.length; i++) {
-                    controls[i].className = 'control';
-                    $('.controls-container').append(controls[i]);
-                }
+                controls.forEach((control, index) => {
+                    control.className = control.className.split('hidden')[0];
+                    document.querySelectorAll('.control-group').forEach(group => {
+                        group.className = 'control-group';
+                    });
+                    parent[index].append(control);
+                    switch (control.id) {
+                        case 'upButton':
+                            parent[index].insertBefore(control, lrGroup);
+                            break;
+                        case 'leftButton':
+                            if (lrGroup.querySelector('#rightButton')) {
+                                lrGroup.insertBefore(control, lrGroup.querySelector('#rightButton'));
+                            } else {
+                                lrGroup.append(control);
+                            }
+                            break;
+                        case 'titleLabel':
+                            controlsContainer.insertBefore(control, controlsContainer.firstElementChild);
+                            break;
+                        case 'yLabel':
+                            parent[index].insertBefore(control, yGroup);
+                            break;
+                        case 'zLabel':
+                            parent[index].insertBefore(control, zGroup);
+                            break;
+                    }
+                });
             }
 
             const glassImage = document.querySelector('#glass');
@@ -286,17 +365,27 @@
                 glassImage.style.width = `${Number(glassImage.style.width.split('px')[0]) + 1}px`;
             });
 
-            document.querySelector('input#ZRotate').value = _phi;
-            document.querySelector('input#YRotate').value  = sigma;
-            document.querySelector('input#ZRotate').addEventListener('change', e => {
-                _phi = Number(e.target.value);
-                // console.log(_phi);
+            document.querySelector('button#ZRotateLeft').addEventListener('mousedown', e => {
+                _phi--;
+                console.log(_phi);
                 glassImage.style.transform = `rotateZ(${_phi}deg) rotateY(${sigma}deg)`;
             });
 
-            document.querySelector('input#YRotate').addEventListener('change', e => {
-                sigma = Number(e.target.value);
-                // console.log(sigma);
+            document.querySelector('button#ZRotateRight').addEventListener('mousedown', e => {
+                _phi++;
+                console.log(_phi);
+                glassImage.style.transform = `rotateZ(${_phi}deg) rotateY(${sigma}deg)`;
+            });
+
+            document.querySelector('button#YRotateLeft').addEventListener('mousedown', e => {
+                sigma--;
+                console.log(_phi);
+                glassImage.style.transform = `rotateZ(${_phi}deg) rotateY(${sigma}deg)`;
+            });
+
+            document.querySelector('button#YRotateRight').addEventListener('mousedown', e => {
+                sigma++;
+                console.log(_phi);
                 glassImage.style.transform = `rotateZ(${_phi}deg) rotateY(${sigma}deg)`;
             });
 

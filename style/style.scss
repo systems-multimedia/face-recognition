@@ -1,13 +1,23 @@
+* {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-decoration: none;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
 #wrapper {
     width: 100%;
     height: auto;
-    min-height: 120vh;
-    // background-image: url('../img/bg1.jpg');
-    // background-size: cover;
-    // background-position: center;
-    padding-top: 30px;
+    min-height: 100vh;
+    background-image: url('../img/seamless-doodle-accessories-mustache-hats-glasses-pattern-background-vector-illustration/3914.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     position: relative;
     overflow: auto;
+    display: flex;
+    flex-direction: column;
 }
 
 #video-container, .canvas-container, .controls-container{
@@ -16,7 +26,7 @@
     min-width: 300px;
     max-height: 75vh;
     min-height: 350px;
-    margin: auto;
+    margin: 5px auto;
     display: block;
     overflow: hidden;
     box-shadow: 5px 5px 4px rgba(255,255,255,0.2);
@@ -36,11 +46,17 @@
 .controls-container {
 
     height: auto;
+    max-width: 750px !important;
     min-height: auto;
     max-height: none;
     padding: 0.7rem 0;
+    background: white;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.2);
 
-    button, input, label {
+    button,
+    input,
+    label,
+    .btn {
         display: block;
         width: 80%;
         height: 40px;
@@ -49,6 +65,7 @@
         border-radius: 3px;
         text-align: center;
         text-transform: uppercase;
+        font-weight: 800;
     }
 
     label {
@@ -56,16 +73,43 @@
 
         * {
             margin: auto;
+            text-align: center;
+            text-transform: uppercase;
+            font-weight: lighter;
         }
     }
 
-    button {
+    button, .btn {
         background: rgb(27, 118, 236);
         color: white;
         cursor: pointer;
         
         &:hover {
             background: rgb(13, 99, 211);
+        }
+    }
+
+    .control {
+        &-move {
+            width: 40px !important;
+            height: 40px;
+        }
+
+        &-group {
+            margin: 4px auto;
+            display: flex;
+            width: 50%;
+            min-width: 90px;
+            max-width: 170px;
+            height: 50px;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+
+            .control {
+                margin: auto !important;
+                display: inline-block;
+            }
         }
     }
 }
@@ -93,15 +137,48 @@
     color: rgb(18, 83, 40);
     border: 1px solid rgba(0, 139, 12, 0.164);
 }
-// canvas {
-// //     max-width: 50%;
-// //     min-width: 300px;
-//     // margin: auto;
-//     // top: 0;
-//     // left: 0;
-//     // right: 0;
-//     // bottom: 0;
-// //     display: block;
-//     bottom: auto !important;
-// //     position: relative;
-// }
+
+#mainbox {
+    @media (min-width: 900px) {
+        width: 100%;
+        display: flex;
+        flex-direction: arrow;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        .box {
+            display: inline-block;
+        }
+    }
+}
+
+ul {
+    width: 95%;
+    margin: 1.3rem auto;
+    border: 0.5px solid rgb(216, 216, 216);
+    border-radius: 4px;
+    padding: 0.75rem 0.3rem;
+
+    li {
+        margin: 0.6rem auto;
+        font-weight: bold;
+
+        ul {
+            border: 0;
+            background: rgb(240, 240, 240);
+
+            li {
+                padding-left: 0.4rem;
+                font-weight: lighter !important;
+            }
+        }
+    }
+}
+
+hr {
+    width: 90%;
+    margin: 5px auto;
+}
+
+#instructions { display: none };
+#toggleInstructions:checked ~ #instructions { display: block };

@@ -37,6 +37,8 @@
   -webkit-box-shadow: 5px 5px 4px rgba(255, 255, 255, 0.2);
           box-shadow: 5px 5px 4px rgba(255, 255, 255, 0.2);
   border-radius: 5px;
+  -webkit-transition: 0.3s;
+  transition: 0.3s;
 }
 
 @media (max-width: 500px) {
@@ -127,6 +129,23 @@
 .controls-container .control-group .control {
   margin: auto !important;
   display: inline-block;
+}
+
+.fixed {
+  position: fixed;
+  left: 0;
+  right: 0;
+  margin: auto;
+  -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.fixed-1x {
+  z-index: 100;
+}
+
+.fixed-2x {
+  z-index: 50;
 }
 
 .hidden {

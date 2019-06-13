@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="./node_modules/font-awesome/css/font-awesome.css">
     <style>
         img#glass {
-            position: absolute;
+            position: fixed;
             transition: 0.15s;
         }
 
@@ -413,7 +413,7 @@
             $glass = $('<img>', { "src": "./img/glasses.png", "id": "glass" });
             $glass.src = "./img/glasses.png";
             $glass.css('width', glassWidth);
-            $glass.css('position', 'absolute');
+            $glass.css('position', 'fixed');
             $glass.css('z-index', 100);
             if (!document.querySelector('#glass')) {
                 $('#wrapper').append($glass);
@@ -462,6 +462,23 @@
             activeControlButton();
         }
 
+    </script>
+
+    <script>
+        window.onscroll = function() {
+            if(!document.querySelector('#video-container')) {
+                currentTop = canvasContainer.getBoundingClientRect().top;
+                canvasContainer.className = 'canvas-container fixed fixed-2x';
+                canvasContainer.style.top = `${currentTop}px`;
+                
+                controlsContainer.style.marginTop = `${canvasContainer.getBoundingClientRect().height + 8}px`;
+                // console.log(controlsContainer.getBoundingClientRect().top);
+                if(controlsContainer.getBoundingClientRect().top >= 340) {
+                    canvasContainer.className = 'canvas-container';
+                    controlsContainer.style.marginTop = `5px`;
+                }
+            }
+        }
     </script>
 </body>
 

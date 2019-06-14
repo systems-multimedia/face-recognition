@@ -176,7 +176,7 @@
             videoContainer.remove();
             canvasContainer.className = 'canvas-container';
             context.drawImage(video, 0, 0, document.querySelector('.canvas-container').clientWidth, document.querySelector('.canvas-container').clientHeight);
-
+            console.log(canvasContainer.getBoundingClientRect().top);
             $canvasImg = $('#canvas');
             faceDetect($canvasImg, $('.canvas-container'));
             snapButton.className = 'hidden';
@@ -462,14 +462,15 @@
     </script>
 
     <script>
+        
         window.onscroll = function () {
             if (window.innerWidth < 900) {
                 if (!document.querySelector('#video-container') && document.querySelector('.control')) {
-                    currentTop = canvasContainer.getBoundingClientRect().top;
+                    currentTop = 5;
                     canvasContainer.className = 'canvas-container fixed fixed-2x';
                     canvasContainer.style.top = `${currentTop}px`;
 
-                    controlsContainer.style.marginTop = `${canvasContainer.getBoundingClientRect().height + 8}px`;
+                    controlsContainer.style.marginTop = `${canvasContainer.getBoundingClientRect().top + canvasContainer.getBoundingClientRect().height + 8}px`;
                     // console.log(controlsContainer.getBoundingClientRect().top);
                     if (controlsContainer.getBoundingClientRect().top >= 340) {
                         canvasContainer.className = 'canvas-container';

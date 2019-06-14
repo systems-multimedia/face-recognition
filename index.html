@@ -141,6 +141,8 @@
         const context = canvas.getContext('2d');
         const parent = [];
 
+        const canvasHeight = canvasContainer.getBoundingClientRect().height;
+
         errorMessage.forEach(function (message) {
             message.remove();
         });
@@ -174,11 +176,12 @@
             canvas.width = video.clientWidth;
             canvas.height = video.clientHeight;
             videoContainer.remove();
-            canvasContainer.className = 'canvas-container';
+            canvasContainer.className = getCanvasClassName(window.innerWidth);
+            canvasContainer.style.marginTop = '5px';
             context.drawImage(video, 0, 0, document.querySelector('.canvas-container').clientWidth, document.querySelector('.canvas-container').clientHeight);
 
             $canvasImg = $('#canvas');
-            faceDetect($canvasImg, $('.canvas-container'));
+            faceDetect($canvasImg, $('.canvas-container', canvasContainer.getBoundingClientRect().left));
             snapButton.className = 'hidden';
             retryButton.className = '';
         })
@@ -233,7 +236,7 @@
             this.style.top = `${this.getBoundingClientRect().top + (e.y - glassImg_y)}px`;
         }
 
-        function faceDetect($element, $parent) {
+        function faceDetect($element, $parent, left) {
             if (document.querySelector('#face-box')) {
                 document.querySelector('#face-box').remove();
             }
@@ -242,20 +245,30 @@
                     complete: function (faces) {
                         $div = $('<div>', { "class": "face-box", "id": "face-box" });
                         $div.css('top', faces[0].positionY);
-                        $div.css('left', faces[0].positionX);
+                        $div.css('left', faces[0].positionX + left);
                         $div.css('width', faces[0].width);
                         $div.css('height', faces[0].height);
                         $parent.append($div);
                         glassWidth = faces[0].width;
                         glassLeft = faces[0].positionX;
-                        instructionMessage.forEach(message => {
-                            if (message.id === 'touchEyesMsg') {
-                                message.classList = 'instruction-message';
-                                messageContainer.append(message);
-                            }
-                        });
-                        activeFaceBox();
+                        if (document.querySelector('#face-box')) {
+                            instructionMessage.forEach(message => {
+                                if (message.id === 'touchEyesMsg') {
+                                    message.classList = 'instruction-message';
+                                    messageContainer.append(message);
+                                }
+                            });
+                            activeFaceBox();
+                        }
                     },
+                }).catch(error => {
+                    errorMessage.forEach(message => {
+                        if (message.id === 'snapErrorMsg') {
+                            message.className = 'error-message';
+                            messageContainer.append(message);
+                        }
+                    });
+                    retryButton.className = '';
                 });
             } catch (error) {
                 errorMessage.forEach(message => {
@@ -462,22 +475,32 @@
     </script>
 
     <script>
-        window.onscroll = function () {
-            if (window.innerWidth <= 900) {
-                if (!document.querySelector('#video-container')) {
-                    currentTop = canvasContainer.getBoundingClientRect().top;
-                    canvasContainer.className = 'canvas-container fixed fixed-2x';
-                    canvasContainer.style.top = `${currentTop}px`;
-
-                    controlsContainer.style.marginTop = `${canvasContainer.getBoundingClientRect().height + 8}px`;
-                    // console.log(controlsContainer.getBoundingClientRect().top);
-                    if (controlsContainer.getBoundingClientRect().top >= 340) {
-                        canvasContainer.className = 'canvas-container';
-                        controlsContainer.style.marginTop = `5px`;
-                    }
-                }
+        function getCanvasClassName(width) {
+            if (width < 900) {
+                return 'canvas-container fixed fixed-2x';
             }
+            return 'canvas-container';
         }
+        if (window.innerWidth < 900) {
+            document.querySelector('#video-container').className = 'fixed fixed-2x';
+            controlsContainer.style.marginTop = `${videoContainer.getBoundingClientRect().height + 8}px`;
+            // canvasContainer.className = 'canvas-container fixed fixed-2x';
+        }
+        // window.onscroll = function () {
+        //     if (window.innerWidth <= 900) {
+        //         if (!document.querySelector('#video-container')) {
+        //             currentTop = canvasContainer.getBoundingClientRect().top;
+        //             canvasContainer.className = 'canvas-container fixed fixed-2x';
+        //             canvasContainer.style.top = `${currentTop}px`;
+
+        //             // console.log(controlsContainer.getBoundingClientRect().top);
+        //             if (controlsContainer.getBoundingClientRect().top >= 340) {
+        //                 canvasContainer.className = 'canvas-container';
+        //                 controlsContainer.style.marginTop = `5px`;
+        //             }
+        //         }
+        //     }
+        // }
 
 
         // window.onresize = () => {

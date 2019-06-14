@@ -178,6 +178,7 @@
             videoContainer.remove();
             canvasContainer.className = getCanvasClassName(window.innerWidth);
             canvasContainer.style.marginTop = '5px';
+            controlsContainer.style.marginTop = `${canvasContainer.getBoundingClientRect().height + 8}px`;
             context.drawImage(video, 0, 0, document.querySelector('.canvas-container').clientWidth, document.querySelector('.canvas-container').clientHeight);
 
             $canvasImg = $('#canvas');
@@ -481,11 +482,11 @@
             }
             return 'canvas-container';
         }
-        if (window.innerWidth < 900) {
-            document.querySelector('#video-container').className = 'fixed fixed-2x';
-            controlsContainer.style.marginTop = `${videoContainer.getBoundingClientRect().height + 8}px`;
-            // canvasContainer.className = 'canvas-container fixed fixed-2x';
-        }
+        // if (window.innerWidth < 900) {
+                controlsContainer.style.marginTop = `${videoContainer.getBoundingClientRect().height + 8}px`;
+        //     document.querySelector('#video-container').className = 'fixed fixed-2x';
+        //     // canvasContainer.className = 'canvas-container fixed fixed-2x';
+        // }
         // window.onscroll = function () {
         //     if (window.innerWidth <= 900) {
         //         if (!document.querySelector('#video-container')) {
@@ -504,7 +505,15 @@
 
 
         // window.onresize = () => {
-        //     window.location.reload();
+        //     fixControls();
+        // };
+
+        // function fixControls {
+        //     if(document.querySelector('#video-container')) {
+        //         controlsContainer.style.marginTop = `${videoContainer.getBoundingClientRect().height + 8}px`;
+        //     } else {
+        //         controlsContainer.style.marginTop = `${canvasContainer.getBoundingClientRect().height + 8}px`;
+        //     }
         // }
     </script>
 </body>

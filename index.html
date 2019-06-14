@@ -48,7 +48,8 @@
         </div>
         <div class="controls-container">
             <div id="message-container">
-                <p class="error-message hidden" id="noCameraErrorMsg">Tu dispositio no es compatible para realizar la operación
+                <p class="error-message hidden" id="noCameraErrorMsg">Tu dispositio no es compatible para realizar la
+                    operación
                 </p>
                 <p class="error-message hidden" id="snapErrorMsg">Hubo un problema al tomar la foto, ¡intentalo
                     nuevamente!
@@ -126,10 +127,6 @@
 
     <!-- Script !! -->
     <script type="text/javascript">
-
-        window.onresize = () => {
-            window.location.reload();
-        }
         const instructionMessage = document.querySelectorAll('.instruction-message');
         const controlsContainer = document.querySelector('.controls-container');
         const messageContainer = document.querySelector('#message-container');
@@ -465,20 +462,27 @@
     </script>
 
     <script>
-        window.onscroll = function() {
-            if(!document.querySelector('#video-container')) {
-                currentTop = canvasContainer.getBoundingClientRect().top;
-                canvasContainer.className = 'canvas-container fixed fixed-2x';
-                canvasContainer.style.top = `${currentTop}px`;
-                
-                controlsContainer.style.marginTop = `${canvasContainer.getBoundingClientRect().height + 8}px`;
-                // console.log(controlsContainer.getBoundingClientRect().top);
-                if(controlsContainer.getBoundingClientRect().top >= 340) {
-                    canvasContainer.className = 'canvas-container';
-                    controlsContainer.style.marginTop = `5px`;
+        window.onscroll = function () {
+            if (window.innerWidth <= 900) {
+                if (!document.querySelector('#video-container')) {
+                    currentTop = canvasContainer.getBoundingClientRect().top;
+                    canvasContainer.className = 'canvas-container fixed fixed-2x';
+                    canvasContainer.style.top = `${currentTop}px`;
+
+                    controlsContainer.style.marginTop = `${canvasContainer.getBoundingClientRect().height + 8}px`;
+                    // console.log(controlsContainer.getBoundingClientRect().top);
+                    if (controlsContainer.getBoundingClientRect().top >= 340) {
+                        canvasContainer.className = 'canvas-container';
+                        controlsContainer.style.marginTop = `5px`;
+                    }
                 }
             }
         }
+
+
+        // window.onresize = () => {
+        //     window.location.reload();
+        // }
     </script>
 </body>
 

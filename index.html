@@ -17,7 +17,7 @@
 
         .face-box {
             border: 1px solid red;
-            position: absolute;
+            position: fixed;
             border-radius: 4px;
             z-index: 100;
         }
@@ -199,6 +199,7 @@
         var containers = document.querySelectorAll('.eye-container');
         var imageNumber = document.querySelector('#imageNumber');
         var controls = document.querySelectorAll('.control');
+        document.querySelector('#retryButton').addEventListener('click', () => window.location.reload());
         for (let i = 0; i < containers.length; i++) {
             containers[i].remove();
         }
@@ -264,7 +265,6 @@
                     }
                 });
                 retryButton.className = '';
-                document.querySelector('#retryButton').addEventListener('click', () => window.location.reload());
             }
         }
 

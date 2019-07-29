@@ -502,6 +502,7 @@ label[for=sources-toggler] {
     color: white;
     padding: 5px 4px;
     text-align: center;
+    z-index: 100;
 
     &:hover {
         background: color(--bluehover);
@@ -523,6 +524,7 @@ label[for=sources-toggler] {
     bottom: 10px;
     left: 10px;
     transition: 0.3s;
+    z-index: 100;
 
     img {
         display: inline-block;

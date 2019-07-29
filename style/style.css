@@ -555,6 +555,7 @@ label[for=sources-toggler] {
   color: white;
   padding: 5px 4px;
   text-align: center;
+  z-index: 100;
 }
 
 label[for=sources-toggler]:before {
@@ -582,6 +583,7 @@ label[for=sources-toggler]:before {
   left: 10px;
   -webkit-transition: 0.3s;
   transition: 0.3s;
+  z-index: 100;
 }
 
 #sources-menu img {

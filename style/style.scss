@@ -539,3 +539,13 @@ label[for=sources-toggler] {
         }
     }
 }
+
+.control-image {
+    max-width: 38px;
+    max-height: 38px;
+}
+
+#width .control-image, #ZRotationGroup .control-image {
+    max-width: 25px;
+    max-height: 12px;
+}

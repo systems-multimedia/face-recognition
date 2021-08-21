@@ -1,23 +1,17 @@
-<h1><b>Face Recognition Test</b></h1>
-<h3>Reconocer y añadir lentes sobre el rostro del cliente</h3>
+# **Face Recognition Test 👀😎**
+### Reconocer y añadir lentes sobre el rostro del cliente
 
-<h4>Pasos:</h4>
-<ul>
-    <li> Capturar Imagen desde webcam
-        <ul>
-            <li>Si hay un error, presionar 'reintentar'</li>
-            <li>Si desea tomar otra foto, presionar 'reintentar'</li>
-        </ul>
-    </li>
-    <li> El rostro reconocido será resaltado por un cuadro de borde rojo </li>
-    <li> Hacer click sobre los ojos </li>
-    <li> Presionar 'probar'
-        <ul>
-            <li>Puede mover los lentes usando los botones de dirección</li>
-            <li>Para girar el lente en sentido antihorario, reducir el valor de la entrada 'girar'</li>
-            <li>Para girar el lente en sentido horario, aumentar el valor de la entrada 'girar'</li>
-            <li>Para rotar el lente en sentido antihorario, aumentar el valor de la entrada 'rotar'</li>
-            <li>Para rotar el lente en sentido horario, reducir el valor de la entrada 'rotar'</li>
-        </ul>
-    </li>
-</ul>
+El objetivo de esta simulación es implementar la webcam así como librerías de javascript obtenidas al investigar, para tomar fotos donde se detecte el rostro del usuario y una vez definida la ubicación de los ojos poder sobreponer una imagen de lentes de visión, de esta forma se simula la compra de lentes de forma online.
+
+#### Pasos
+- Capturar Imagen desde webcam 📷
+    - Si hay un error, presionar 'reintentar'
+    - Si desea tomar otra foto, presionar 'reintentar'
+- El rostro reconocido será resaltado por un cuadro de borde rojo 🟥
+- Hacer click sobre los ojos
+- Presionar 'probar'
+    - Puede mover los lentes usando los botones de dirección
+    - Para girar el lente en sentido antihorario, reducir el valor de la entrada 'girar'
+    - Para girar el lente en sentido horario, aumentar el valor de la entrada 'girar'
+    - Para rotar el lente en sentido antihorario, aumentar el valor de la entrada 'rotar'
+    - Para rotar el lente en sentido horario, reducir el valor de la entrada 'rotar'

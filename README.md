@@ -1,4 +1,4 @@
-# **Face Recognition Test 👀😎**
+# **Face Recognition JavaScript 👀😎**
 ### Reconocer y añadir lentes sobre el rostro del cliente
 
 El objetivo de esta simulación es implementar la webcam así como librerías de javascript obtenidas al investigar, para tomar fotos donde se detecte el rostro del usuario y una vez definida la ubicación de los ojos poder sobreponer una imagen de lentes de visión, de esta forma se simula la compra de lentes de forma online.
